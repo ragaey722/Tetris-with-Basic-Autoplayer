@@ -69,98 +69,142 @@ public class AutoImp implements AutoPlayer {
 		bestscore=Integer.MIN_VALUE;
 		curs.clear();
 		mq.clear();
-		check();
+		GameCopy copy= new GameCopy(game);
+		check(copy,1);
 
 		return mq.poll();
 		
 	}
 
-	private void check(){
-		
-	 	GameCopy copy= new GameCopy(game);
-		left(copy.clone());
-		right(copy.clone());
-		cw(copy.clone());
-		cc(copy.clone());
-		cw2(copy.clone());
-		cc2(copy.clone());
+	private void check(GameCopy copy, int n){
+		if(n<0)
+		return;
+		if(n==0)
+		{while(copy.moveDown());
+			if(copy.curboard.canAddPiece(copy.nextpiece, 2,copy.curboard.getNumberOfColumns()/2))
+			copy.curboard.addPiece(copy.nextpiece, 2,copy.curboard.getNumberOfColumns()/2);
+			else {scorcalc(copy.curboard); return;}
+			copy.curpiece=copy.nextpiece;
+		copy.curcol= copy.curboard.getNumberOfColumns()/2 ;
+		copy.currow = 2;}
+		left(copy.clone(),n);
+		right(copy.clone(),n);
+		cw(copy.clone(),n);
+		cc(copy.clone(),n);
+		cw2(copy.clone(),n);
+		cc2(copy.clone(),n);
 	while(copy.moveDown());
-	curs.add(Move.DOWN);
+	if(n>0)
+	{curs.add(Move.DOWN);
+	check(copy.clone(),n-1);
+   	}
+	if(n==0)
 	scorcalc(copy.curboard);
+	else
 		curs.pop();
-	
-
 	}
 
-	private void left(GameCopy copy){
+	private void left(GameCopy copy,int n){
 		if(!copy.moveLeft())
 		return;
+		if(n>0)
 		curs.add(Move.LEFT);
-		left(copy.clone());
-		cw(copy.clone());
-		cc(copy.clone());
-		cw2(copy.clone());
-		cc2(copy.clone());
+		left(copy.clone(),n);
+		cw(copy.clone(),n);
+		cc(copy.clone(),n);
+		cw2(copy.clone(),n);
+		cc2(copy.clone(),n);
 	while(copy.moveDown());
+	if(n>0)
+	{check(copy, n-1);}
+	if(n==0)
 	scorcalc(copy.curboard);
+	else
 	curs.pop();
 	
 	}
 
-	private void right(GameCopy copy){
+	private void right(GameCopy copy,int n){
 		if(!copy.moveRight())
 		return;
+		if(n>0)
 		curs.add(Move.RIGHT);
-		right(copy.clone());
-		cw(copy.clone());
-		cc(copy.clone());
-		cw2(copy.clone());
-		cc2(copy.clone());
+		right(copy.clone(),n);
+		cw(copy.clone(),n);
+		cc(copy.clone(),n);
+		cw2(copy.clone(),n);
+		cc2(copy.clone(),n);
 	while(copy.moveDown());
-		scorcalc(copy.curboard);
+	if(n>0)
+	{check(copy, n-1);}
+	if(n==0)
+	scorcalc(copy.curboard);
+	else
 	curs.pop();
 
 	}
 
-	private void cw(GameCopy copy){
+	private void cw(GameCopy copy,int n){
 		if(!copy.rotatePieceClockwise())
 		return;
+		if(n>0)
 		curs.add(Move.ROTATE_CW);
 		while(copy.moveDown());
-		scorcalc(copy.curboard);
-		curs.pop();
+		if(n>0)
+	{check(copy, n-1);}
+	if(n==0)
+	scorcalc(copy.curboard);
+	else
+	curs.pop();
 
 	}
 
-	private void cc(GameCopy copy){
+	private void cc(GameCopy copy,int n){
 		if(!copy.rotatePieceCounterClockwise())
 		return;
+		if(n>0)
 		curs.add(Move.ROTATE_CCW);
 		while(copy.moveDown());
-		scorcalc(copy.curboard);
-		curs.pop();
+		if(n>0)
+	{check(copy, n-1);}
+	if(n==0)
+	scorcalc(copy.curboard);
+	else
+	curs.pop();
 	}
-	private void cw2(GameCopy copy){
+
+	private void cw2(GameCopy copy,int n){
 		if(!copy.rotatePieceClockwise() || !copy.rotatePieceClockwise())
 		return;
-		curs.add(Move.ROTATE_CW);
-		curs.add(Move.ROTATE_CW);
+		if(n>0)
+		{curs.add(Move.ROTATE_CW);
+		curs.add(Move.ROTATE_CW);}
 		while(copy.moveDown());
-		scorcalc(copy.curboard);
-		curs.pop();
-		curs.pop();
-
+	if(n>0)
+	{check(copy, n-1);}
+	if(n==0)
+	scorcalc(copy.curboard);
+	else
+	{curs.pop();
+	curs.pop();
+	}
 	}
 
-	private void cc2(GameCopy copy){
+	private void cc2(GameCopy copy,int n){
 		if(!copy.rotatePieceCounterClockwise() || !copy.rotatePieceCounterClockwise())
 		return;
-		curs.add(Move.ROTATE_CCW);
-		curs.add(Move.ROTATE_CCW);
+		if(n>0)
+		{curs.add(Move.ROTATE_CCW);
+		curs.add(Move.ROTATE_CCW);}
 		while(copy.moveDown());
-		scorcalc(copy.curboard);
-		curs.pop();
-		curs.pop();
+		if(n>0)
+	{check(copy, n-1);}
+	if(n==0)
+	scorcalc(copy.curboard);
+	else
+	{curs.pop();
+	curs.pop();
+	}
 
 	}
 
